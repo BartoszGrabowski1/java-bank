@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CustomerService {
     public static final Long EMPTY_ID = null;
@@ -23,7 +25,9 @@ public class CustomerService {
     }
 
     public boolean isCustomerDataValid(CustomerDto customerDto){
-        if(EmailValidator.patternMatches(customerDto.getEmail()) && customerDto.getPassword().length() > 6){
+        if(EmailValidator.patternMatches(customerDto.getEmail())
+                && customerDto.getPassword().length() > 6
+                && customerRepository.findByEmail(customerDto.getEmail()).isEmpty()){
             return true;
         }
         return false;
@@ -38,5 +42,20 @@ public class CustomerService {
                 passwordEncoder.encode(customerDto.getPassword()),
                 CustomerRole.USER));
     }
+
+    public Customer getCustomerDetails(Long id){
+        return customerRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void updateCustomerDetails(Long id,CustomerDto customerDto){
+        customerRepository.save(new Customer(
+                id,
+                customerDto.getEmail(),
+                customerDto.getName(),
+                customerDto.getSurname(),
+                passwordEncoder.encode(customerDto.getPassword()),
+                CustomerRole.USER));
+    }
+
 
 }
