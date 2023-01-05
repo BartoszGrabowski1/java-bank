@@ -21,13 +21,5 @@ public class LoginController {
         this.javaBankUserDetails = javaBankUserDetails;
     }
 
-    @PostMapping("/loginversion")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginRequest loginRequest){
-        javaBankUserDetails.loadUserByUsername(loginRequest.getEmail());
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Successfully authentication!");
-    }
-
 
 }
